@@ -1,5 +1,6 @@
 package br.edu.ifsp.prw3.av3.consertos_api.model;
 
+import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosAtualizarDTO;
 import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosPostDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,11 +34,29 @@ public class Conserto {
             @AttributeOverride(name = "cor", column = @Column(name = "veiculo_cor"))
     })
     private Veiculo veiculo;
+    private Boolean ativo;
 
     public Conserto(DadosPostDTO dto) {
+        this.ativo = true;
         this.dataEntrada = dto.dataEntrada();
         this.dataSaida = dto.dataSaida();
         this.mecanico = new Mecanico(dto.mecanico());
         this.veiculo = new Veiculo((dto.veiculo()));
+    }
+
+    public void excluir() {
+        this.ativo = false;
+    }
+
+    public void atualizarInformacoes(DadosAtualizarDTO dados) {
+        if (dados.dataSaida() != null) {
+            this.dataSaida = dados.dataSaida();
+        }
+
+        if (this.mecanico != null) {
+            if (dados.mecanicoNome() != null || dados.mecanicoAnosExperiencia() != null) {
+                this.mecanico.atualizarInformacoesParcial(dados.mecanicoNome(), dados.mecanicoAnosExperiencia());
+            }
+        }
     }
 }

@@ -18,4 +18,13 @@ public class Mecanico {
         this.nome = dto.nome();
         this.anosExperiencia = dto.anosExperiencia();
     }
+
+    public void atualizarInformacoesParcial(String nome, Integer anosExperiencia) {
+        if (nome != null) {
+            this.nome = nome;
+        }
+        if (anosExperiencia != null) {
+            this.anosExperiencia = anosExperiencia;
+        }
+    }
 }

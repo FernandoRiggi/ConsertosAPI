@@ -1,5 +1,6 @@
 package br.edu.ifsp.prw3.av3.consertos_api.controller;
 
+import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosAtualizarDTO;
 import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosDetalhamentoDTO;
 import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosListagemDTO;
 import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosPostDTO;
@@ -13,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
-import java.util.List;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/consertos")
@@ -23,12 +26,18 @@ public class ConsertoController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody @Valid DadosPostDTO dados) {
+    public ResponseEntity<DadosDetalhamentoDTO> cadastrar(@RequestBody @Valid DadosPostDTO dados,
+                                                          UriComponentsBuilder uriBuilder) {
         var conserto = new Conserto(dados);
-
         repository.save(conserto);
 
-        System.out.println("Dados recebidos no cadastro: " + dados);
+        var uri = uriBuilder.path("/consertos/{id}")
+                .buildAndExpand(conserto.getId())
+                .toUri();
+
+        var dto = new DadosDetalhamentoDTO(conserto);
+
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @GetMapping
@@ -39,11 +48,46 @@ public class ConsertoController {
     }
 
     @GetMapping("/parcial")
-    public ResponseEntity<List<DadosListagemDTO>> listarParcial() {
-        List<Conserto> consertos = repository.findAll();
-        List<DadosListagemDTO> dtos = consertos.stream()
-                .map(DadosListagemDTO::new)
-                .toList();
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<Page<DadosListagemDTO>> listarParcial(Pageable paginacao) {
+        var page = repository.findAllByAtivoTrue(paginacao)
+                .map(DadosListagemDTO::new);
+        return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosDetalhamentoDTO> detalhar(@PathVariable Long id) {
+
+        Optional<Conserto> optionalConserto = repository.findById(id);
+
+        if (optionalConserto.isPresent()) {
+            Conserto conserto = optionalConserto.get();
+
+            var dto = new DadosDetalhamentoDTO(conserto);
+
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoDTO> atualizar(@RequestBody @Valid DadosAtualizarDTO dados) {
+
+        Conserto conserto = repository.getReferenceById(dados.id());
+
+        conserto.atualizarInformacoes(dados);
+
+        return ResponseEntity.ok(new DadosDetalhamentoDTO(conserto));
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity excluir(@PathVariable Long id) {
+        Conserto conserto = repository.getReferenceById(id);
+
+        conserto.excluir();
+
+        return ResponseEntity.noContent().build();
     }
 }
