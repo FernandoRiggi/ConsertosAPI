@@ -1,6 +1,6 @@
 package br.edu.ifsp.prw3.av3.consertos_api.model;
 
-import br.edu.ifsp.prw3.av3.consertos_api.dto.ConsertoDTO;
+import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosPostDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -29,11 +29,12 @@ public class Conserto {
     @AttributeOverrides({
             @AttributeOverride(name = "marca", column = @Column(name = "veiculo_marca")),
             @AttributeOverride(name = "modelo", column = @Column(name = "veiculo_modelo")),
-            @AttributeOverride(name = "ano", column = @Column(name = "veiculo_ano"))
+            @AttributeOverride(name = "ano", column = @Column(name = "veiculo_ano")),
+            @AttributeOverride(name = "cor", column = @Column(name = "veiculo_cor"))
     })
     private Veiculo veiculo;
 
-    public Conserto(ConsertoDTO dto) {
+    public Conserto(DadosPostDTO dto) {
         this.dataEntrada = dto.dataEntrada();
         this.dataSaida = dto.dataSaida();
         this.mecanico = new Mecanico(dto.mecanico());
