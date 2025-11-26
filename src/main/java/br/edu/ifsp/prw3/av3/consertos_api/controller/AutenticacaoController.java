@@ -1,6 +1,7 @@
 package br.edu.ifsp.prw3.av3.consertos_api.controller;
 
-import br.edu.ifsp.prw3.av3.consertos_api.
+import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosAuthDTO;
+import br.edu.ifsp.prw3.av3.consertos_api.dto.DadosRespostaLogin;
 import br.edu.ifsp.prw3.av3.consertos_api.model.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import security.JWTService;
+import br.edu.ifsp.prw3.av3.consertos_api.security.JWTService;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,8 +26,8 @@ public class AutenticacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<DadosRespostaLogin> login(@RequestBody @Valid DadosAuth dados) {
-        final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
+    public ResponseEntity<DadosRespostaLogin> login(@RequestBody @Valid DadosAuthDTO dados) {
+        final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(dados.login, dados.senha());
         final Authentication authenticate = authenticationManager.authenticate(token);
         final String authToken = tokenService.gerarToken((Usuario) authenticate.getPrincipal());
 

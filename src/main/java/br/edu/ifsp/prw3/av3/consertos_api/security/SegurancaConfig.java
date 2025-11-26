@@ -1,5 +1,6 @@
-package security;
+package br.edu.ifsp.prw3.av3.consertos_api.security;
 
+import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

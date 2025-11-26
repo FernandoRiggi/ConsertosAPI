@@ -1,8 +1,16 @@
-package security;
+package br.edu.ifsp.prw3.av3.consertos_api.security;
 
 import br.edu.ifsp.prw3.av3.consertos_api.model.Usuario;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.Value;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import static org.springframework.security.config.Elements.JWT;
 
