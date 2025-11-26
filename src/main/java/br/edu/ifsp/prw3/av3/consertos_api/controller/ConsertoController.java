@@ -35,7 +35,17 @@ public class ConsertoController {
                 .buildAndExpand(conserto.getId())
                 .toUri();
 
-        var dto = new DadosDetalhamentoDTO(conserto);
+        var dto = new DadosDetalhamentoDTO(
+                conserto.getId(),
+                conserto.getDataEntrada().toString(),
+                conserto.getDataSaida().toString(),
+                conserto.getMecanico().getNome(),
+                conserto.getMecanico().getAnosExperiencia(),
+                conserto.getVeiculo().getAno(),
+                conserto.getVeiculo().getMarca(),
+                conserto.getVeiculo().getModelo(),
+                conserto.getVeiculo().getCor()
+        );
 
         return ResponseEntity.created(uri).body(dto);
     }
@@ -43,14 +53,30 @@ public class ConsertoController {
     @GetMapping
     public ResponseEntity<Page<DadosDetalhamentoDTO>> listarTodos(Pageable paginacao) {
         var page = repository.findAll(paginacao)
-                .map(DadosDetalhamentoDTO::new);
+                .map(conserto -> new DadosDetalhamentoDTO(
+                        conserto.getId(),
+                        conserto.getDataEntrada().toString(),
+                        conserto.getDataSaida().toString(),
+                        conserto.getMecanico().getNome(),
+                        conserto.getMecanico().getAnosExperiencia(),
+                        conserto.getVeiculo().getAno(),
+                        conserto.getVeiculo().getMarca(),
+                        conserto.getVeiculo().getModelo(),
+                        conserto.getVeiculo().getCor()
+                ));
         return ResponseEntity.ok(page);
     }
 
     @GetMapping("/parcial")
     public ResponseEntity<Page<DadosListagemDTO>> listarParcial(Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao)
-                .map(DadosListagemDTO::new);
+                .map(conserto -> new DadosListagemDTO(
+                        conserto.getId(),
+                        conserto.getDataEntrada().toString(),
+                        conserto.getDataSaida().toString(),
+                        conserto.getMecanico().getNome(),
+                        conserto.getVeiculo().getModelo()
+                ));
         return ResponseEntity.ok(page);
     }
 
@@ -62,7 +88,17 @@ public class ConsertoController {
         if (optionalConserto.isPresent()) {
             Conserto conserto = optionalConserto.get();
 
-            var dto = new DadosDetalhamentoDTO(conserto);
+            var dto = new DadosDetalhamentoDTO(
+                    conserto.getId(),
+                    conserto.getDataEntrada().toString(),
+                    conserto.getDataSaida().toString(),
+                    conserto.getMecanico().getNome(),
+                    conserto.getMecanico().getAnosExperiencia(),
+                    conserto.getVeiculo().getAno(),
+                    conserto.getVeiculo().getMarca(),
+                    conserto.getVeiculo().getModelo(),
+                    conserto.getVeiculo().getCor()
+            );
 
             return ResponseEntity.ok(dto);
         } else {
@@ -78,7 +114,17 @@ public class ConsertoController {
 
         conserto.atualizarInformacoes(dados);
 
-        return ResponseEntity.ok(new DadosDetalhamentoDTO(conserto));
+        return ResponseEntity.ok(new DadosDetalhamentoDTO(
+                conserto.getId(),
+                conserto.getDataEntrada().toString(),
+                conserto.getDataSaida().toString(),
+                conserto.getMecanico().getNome(),
+                conserto.getMecanico().getAnosExperiencia(),
+                conserto.getVeiculo().getAno(),
+                conserto.getVeiculo().getMarca(),
+                conserto.getVeiculo().getModelo(),
+                conserto.getVeiculo().getCor()
+        ));
     }
 
     @DeleteMapping("/{id}")

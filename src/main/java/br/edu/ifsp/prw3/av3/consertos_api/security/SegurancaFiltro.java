@@ -10,12 +10,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @Component
-public class SegurancaFiltro {
+public class SegurancaFiltro extends OncePerRequestFilter {
     private final JWTService tokenService;
     private final UsuarioRepository usuarioRepository;
 
@@ -31,10 +32,13 @@ public class SegurancaFiltro {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             final String token = authHeader.replace("Bearer ", "");
             final String subject = tokenService.getSubject(token);
-            final Optional<Usuario> usuario = usuarioRepository.findByLogin(subject);
-            final Authentication auth = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+            final Optional<Usuario> usuarioOpt = usuarioRepository.findByLogin(subject);
+            if (usuarioOpt.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
+                final Usuario usuario = usuarioOpt.get();
+                final Authentication auth = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
         }
 
         filterChain.doFilter(request, response);

@@ -7,7 +7,6 @@ public record DadosListagemDTO(
         String dataEntrada,
         String dataSaida,
         String mecanicoNome,
-        String veiculoMarca,
         String veiculoModelo
 ) {
     public DadosListagemDTO(Conserto conserto) {
@@ -16,7 +15,6 @@ public record DadosListagemDTO(
                 conserto.getDataEntrada(),
                 conserto.getDataSaida(),
                 conserto.getMecanico() != null ? conserto.getMecanico().getNome() : null,
-                conserto.getVeiculo() != null ? conserto.getVeiculo().getMarca() : null,
                 conserto.getVeiculo() != null ? conserto.getVeiculo().getModelo() : null
         );
     }

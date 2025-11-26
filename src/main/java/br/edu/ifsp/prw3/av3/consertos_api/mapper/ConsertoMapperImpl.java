@@ -37,8 +37,12 @@ public class ConsertoMapperImpl implements ConsertoMapper{
                 conserto.getDataEntrada().toString(),
                 conserto.getDataSaida().toString(),
                 conserto.getMecanico().getNome(),
+                conserto.getMecanico().getAnosExperiencia(),
+                conserto.getVeiculo().getAno(),
                 conserto.getVeiculo().getMarca(),
-                conserto.getVeiculo().getModelo()
+                conserto.getVeiculo().getModelo(),
+                conserto.getVeiculo().getCor()
+
         ));
     }
 }
