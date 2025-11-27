@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS usuarios (
+    id BIGINT AUTO_INCREMENT,
+    login VARCHAR(100) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_usuarios PRIMARY KEY (id)
+    );
